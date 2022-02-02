@@ -193,7 +193,7 @@ if __name__=="__main__":
     heading2.pack()
     f1=Frame(root)
     f1.pack(side=TOP,fill=BOTH,expand=True,pady=10)
-    name=Label(f1,text="ENTER URL OF PLAYLIST",font="calibre 20 bold italic",relief=FLAT,padx=8,pady=3)
+    name=Label(f1,text="ENTER URL OF PLAYLIST OR VIDEO",font="calibre 20 bold italic",relief=FLAT,padx=8,pady=3)
     name.pack()
     space=Label(f1,text="",font="calibre 2 bold")
     space.pack()
