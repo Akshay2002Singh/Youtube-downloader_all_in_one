@@ -5,10 +5,7 @@ from time import sleep
 from os import listdir
 from pytube.contrib.playlist import Playlist
 import os
-import threading
 
-downloading = 0
-queue = []
 list=[]
 temp_status=""
 file_size=0
@@ -32,38 +29,8 @@ def update_percentage_status(temp):
 def progress(stream,chunk,byte_remaining):
     percent = (file_size-byte_remaining)/file_size
     update_percentage_status(percent)
-def queue_playlist():
+def download_playlist():
     link=URL.get()
-    if link!="":
-        queue.append([link,1])
-        clear_url_box()
-        start_downloadin()
-
-def queue_only_video():
-    link=URL.get()
-    if link!="":
-        queue.append([link,0])
-        clear_url_box()
-        start_downloadin()
-    
-def start_downloadin():
-    if(downloading==0):
-        t = threading.Thread(target=download_start)
-        t.start()
-def download_start():
-    global downloading
-    downloading = 1
-    while(len(queue)!=0):
-        print(len(queue))
-        temp = queue.pop(0)
-        if(temp[1]==0):
-            download_only_video(temp[0])
-        else:
-            download_playlist(temp[0])
-    downloading = 0
-
-def download_playlist(link):
-    print(link)
     update_status("Collecting information to download playlist.")
     try:
         playlist = Playlist(link)
@@ -74,10 +41,7 @@ def download_playlist(link):
         update_status("Ready to download")
         return
     temp_path=os.path.join(download_path.get(),temp_title)
-    try:
-        os.mkdir(temp_path)
-    except:
-        pass
+    os.mkdir(temp_path)
     cur_path.set(temp_path)
     # print(playlist.length)
     i=1
@@ -97,7 +61,7 @@ def download_playlist(link):
     list.clear()
     delete_list()
     update_status("Playlist Downloaded.")
-
+    URL.set("")
 
 # function to download video of playlists
 def download_video(video_link,cur,last):
@@ -147,11 +111,12 @@ def showfiles():
         elif os.path.isdir(os.path.join(download_path.get(),video_file)):
             mylist.insert(END," "+str("PLAYLIST : "+video_file)) 
 # function to download indivisual video 
-def download_only_video(link):
+def download_only_video():
     global temp_status
     global file_size
-    print(link)
+    # print('temp')
     update_status("Checking link")
+    link=URL.get()
     if link!="":
         try:
             yt=YouTube(link,on_progress_callback=progress)
@@ -250,9 +215,9 @@ if __name__=="__main__":
     Checkbutton(root,text="Download in audio format",variable=download_in_audio_format,font="calibre 14 bold",fg="red",onvalue=1,offvalue=0).pack(anchor='w')
     f2=Frame(root)
     f2.pack(side=TOP,fill=BOTH,expand=True)
-    download_video_btn=Button(f2,text="Download Video",command=queue_only_video,bd=5,fg="blue",font="calibre 18 bold")
+    download_video_btn=Button(f2,text="Download Video",command=download_only_video,bd=5,fg="blue",font="calibre 18 bold")
     download_video_btn.pack(side = LEFT, expand = True, fill = X)
-    download_playlist_btn=Button(f2,text="Download Playlist",command=queue_playlist,bd=5,fg="blue",font="calibre 18 bold")
+    download_playlist_btn=Button(f2,text="Download Playlist",command=download_playlist,bd=5,fg="blue",font="calibre 18 bold")
     download_playlist_btn.pack(side = LEFT, expand = True, fill = X)
 
     # show files 
