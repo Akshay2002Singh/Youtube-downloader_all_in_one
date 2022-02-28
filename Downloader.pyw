@@ -157,24 +157,19 @@ def download_only_video(link):
             yt=YouTube(link,on_progress_callback=progress)
         except:
             update_status("Enter valid link")
-            sleep(0.6)
+            sleep(0.8)
             clear_url_box()
             update_status("Ready to download video")
             return
-        try:
-            if download_in_audio_format.get():
-                update_status("Collecting information to download audio.")
-                video = yt.streams.filter(only_audio=True).first()
-                print(video)
-            else:
-                update_status("Collecting information to download video.")
-                video = yt.streams.filter(progressive=True,file_extension='mp4')
-                video = video.get_highest_resolution()
-        except:
-            update_status("Some Error!")
-            clear_url_box()
-            return
 
+        if download_in_audio_format.get():
+            update_status("Collecting information to download audio.")
+            video = yt.streams.filter(only_audio=True).first()
+            # print(video)
+        else:
+            update_status("Collecting information to download video.")
+            video = yt.streams.filter(progressive=True,file_extension='mp4')
+            video = video.get_highest_resolution()
         # print(video)
 
         try:

@@ -1,1 +1,2 @@
-pytube==11.0.2
+pytube==12.0.0
+typing_extensions==4.0.1
